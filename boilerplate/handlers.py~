@@ -1060,27 +1060,27 @@ class SubscribeHandler(BaseHandler):
             # validate the payment request and respond back to Google
             if decoded_jwt['iss'] == 'Google' and decoded_jwt['aud'] == self.app.config.get('SELLER_ID'):
                 if ('response' in decoded_jwt and
-                        'orderId' in decoded_jwt['response'] and
-                        'request' in decoded_jwt):
+                      'orderId' in decoded_jwt['response'] and
+                      'request' in decoded_jwt):
                     order_id = decoded_jwt['response']['orderId']
                     request_info = decoded_jwt['request']
                     if ('currencyCode' in request_info and 'sellerData' in request_info
-                          and 'name' in request_info and 'price' in request_info):
-                        # optional - update local database
+                        and 'name' in request_info and 'price' in request_info):
+                      # optional - update local database
                 
-                        # respond back to complete payment
-                        self.response.out.write(order_id)
+                      # respond back to complete payment
+                      self.response.out.write(order_id)
             
                 # check if this was a subscription cancellation postback
                 if ('response' in decoded_jwt and
-                      'orderId' in decoded_jwt['response'] and
-                      'statusCode' in decoded_jwt['response']):
+                    'orderId' in decoded_jwt['response'] and
+                    'statusCode' in decoded_jwt['response']):
                   status_code =  decoded_jwt['response']['statusCode']
                   if status_code == 'SUBSCRIPTION_CANCELED':
-                      # process cancellation
-                      cancelled = 1
+                    # process cancellation
+                    cancelled = 1
         
-        return self.redirect_to('subscribe')
+            return self.redirect_to('subscribe')
 
     @webapp2.cached_property
     def form(self):

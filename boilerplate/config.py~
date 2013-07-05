@@ -103,8 +103,10 @@ config = {
     'log_visit': True,
 
     # Google checkout seller info
-    'SELLER_ID' :'11484438936919400000',        # Sandbox 11484438936919400000
-    'SELLER_SECRET' :'xAaQGwZgMp9mfz6vi5QbBA',  # Sandbox xAaQGwZgMp9mfz6vi5QbBA
+#    'SELLER_ID' :'11484438936919400000',        # Sandbox 11484438936919400000
+#    'SELLER_SECRET' :'xAaQGwZgMp9mfz6vi5QbBA',  # Sandbox xAaQGwZgMp9mfz6vi5QbBA
+    'SELLER_ID' :'11484438936919440786',        # Sandbox 11484438936919400000
+    'SELLER_SECRET' :'pedO6FWvZHv59vlNHDdI7A',  # Sandbox xAaQGwZgMp9mfz6vi5QbBA
     
 
     # ----> ADD MORE CONFIGURATION OPTIONS HERE <----
