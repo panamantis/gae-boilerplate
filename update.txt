@@ -1,1 +1,63 @@
-JC July 4, 2013
+Boilerplate merchant drop-in notes:
+
+Demo accessible at:
+/subscribe/
+
+Handshake response from Google routed here:
+/subscribe/postback
+
+Configuration:
+
+**Specify your merchant ID in config:
+config.py
+Include your SELLER_ID and SELLER_SECRET
+
+**Specify your product info & callback action:
+In core handler:
+Handlers.py
+
+Class SubscribeHandler
+    Get->  Set the product info
+    Post-> Callback confirmation is specified here.  Option to update local database.
+
+
+Developer specifics:
+
+Set developer or testing mode at html page:
+/boilerplate/templates/subscribe.html
+Option:
+production_config or sandbox_config (for debugging with fake merchant ID).
+
+Define url specifics:
+Modify router.py
+
+
+-
+
+Additional notes:
+
+GIT:
+git clone https://code.google.com/p/wallet-sub-python
+
+git init
+git add .
+git commit
+git push origin master
+
+
+RUN SERVER:
+python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" C:\scripts3\freelance\wallet-sub-python\src
+
+MODIFICATIONS:
+
+Add to router.py
+Add to template/subscribe.html
+Add to handlers.py
+add css, images		
+add js and tags		
+	add jwt	
+	add imports to main handler page
+
+Getting account:
+Create a Sandbox merchant account with a different email address at http://sandbox.google.com/checkout/sell/
+	
