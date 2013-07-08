@@ -55,7 +55,6 @@ iframe {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     transition: margin-top 0.25s ease-in-out 0s;
     overflow:hidden;
-    padding: 0 0 0 10px;
 }
 
 

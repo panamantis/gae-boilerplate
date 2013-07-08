@@ -22,18 +22,32 @@
       <td>
       <ul>
         <li>
-          <img src="/boilerplate/img/drivein12.jpg"/>
-          <button class="buy-button" type="button" onClick="purchase('Item1');">Free Trial Subscription</button></li>
-          <br/>
-        <li>
         <img src="/boilerplate/img/golden_gate.jpg"/>
-        <button class="buy-button" type="button" onClick="purchase('Item2');">Deluxe Subscription</button></li>
+        <button class="buy-button" type="button" onClick="document.getElementById('myFrame').style.visibility='visible';">Deluxe Subscription</button></li>
       </ul>
       </td>
     </tr>
     </table>
+
+<iframe name="hss_iframe" width="570px" height="540px" scrolling="no" style="visibility:hidden"></iframe>
+<form style="display:none" target="hss_iframe" name="form_iframe" method="post" action="{{ mode_url }}">>
+<input type="hidden" name="cmd" value="_hosted-payment">
+<input type name="paymentaction" value="sale">
+<input type="submit" name="METHOD" value="Pay Now">
+<input type="hidden" name="template" value="templateD">
+<input type="hidden" name="business" value="{{ business }}">
+
+<input type name="subtotal" value="{{ subtotal }}">
+<input type="custom" name="{{ user_id }}"/>
+<!-- <input type="first_name" name="FIRST"/> -->
+<!-- <input type="last_name"  name="LAST"/> -->
+<input type="hidden" name="notify_url" value="{{ notify_url }}"/>
+<input type name="return" value="{{ return }}">
+<input type="hidden" name="cancel_return" value="{{ cancel_return }}"/>
+</form>
    
 {% endblock %}
+
 
 {% block mediaCSS %}
 <link href="/boilerplate/css/subscribe.css" media="all" rel="stylesheet" type="text/css"/>
@@ -43,46 +57,9 @@
 {% block mediaJS %}
 
 
-<!-- base included <script language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript"></script> -->
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-
 <script type="text/javascript">
-
-      google.load('payments', '1.0', {
-        'packages': ['sandbox_config']
-      });
-
-      // Success handler
-      var successHandler = function(status){
-        if (window.console != undefined) {
-          console.log("Purchase completed successfully: ", status);
-          //window.location.reload();
-        }
-      }
-
-      // Failure handler
-      var failureHandler = function(status){
-        if (window.console != undefined) {
-          console.log("Purchase failed ", status);
-        }
-      }
-
-      function purchase(item) {
-        var generated_jwt;
-        if (item == "Item1") {
-          generated_jwt = "{{ jwt_1 }}";
-        } else if (item == "Item2") {
-          generated_jwt = "{{ jwt_2 }}";
-        } else {
-          return;
-        }
-
-        goog.payments.inapp.buy({
-          'jwt'     : generated_jwt,
-          'success' : successHandler,
-          'failure' : failureHandler
-        });
-      }
+	document.form_iframe.submit();
 </script>
+
 {% endblock %}
 

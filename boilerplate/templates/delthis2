@@ -1,0 +1,73 @@
+{% extends base_layout %}
+
+{% block title %}
+        {% trans %}Subscribe{% endtrans %} - {{app_name}}
+{% endblock %}
+{% block header_title %}
+        {% trans %}Subscribe{% endtrans %}
+{% endblock %}
+
+{% block subnavbar %}
+     <div class="subnav">
+          <!-- Subnav removed in subscribe.html -->
+     </div>
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Digital Posters Subscriptions</h1>
+    <table>
+    <tr valign="top">
+      <td>
+      <ul>
+        <li>
+          <img src="/boilerplate/img/drivein12.jpg"/>
+          <button class="buy-button" type="button" onClick="purchase('Item1');">Free Trial Subscription</button></li>
+          <br/>
+        <li>
+        <img src="/boilerplate/img/golden_gate.jpg"/>
+        <button class="buy-button" type="button" onClick="purchase('Item2');">Deluxe Subscription</button></li>
+      </ul>
+      </td>
+    </tr>
+    </table>
+
+<iframe name="hss_iframe" width="570px" height="540px" scrolling="no"></iframe>
+<!-- https://securepayments.sandbox.paypal.com/acquiringweb -->
+<!-- https://securepayments.paypal.com/acquiringweb -->
+<form style="display:none" target="hss_iframe" name="form_iframe" method="post" action="https://securepayments.sandbox.paypal.com/cgi-bin/acquiringweb">>
+<input type="hidden" name="cmd" value="_hosted-payment">
+<input type name="subtotal" value="50">
+<!-- <input type="hidden" name="business" value="jon.clement-facilitator@gmail.com"> -->
+<input type="hidden" name="business" value="merch1_1326898379_biz@dsign.co.uk">
+<input type name="paymentaction" value="sale">
+<input type="hidden" name="template" value="templateD">
+
+<input type="hidden" name="currency_code" value="AUD">
+<input type="hidden" name="shipping" value="0">
+
+<input type name="return" value="/subscribe/">
+<input type="custom" name="USERNAME-----IPN notification"/>
+<input type="hidden" name="notify_url" value="http://-----IPN notification"/>
+<input type="hidden" name="cancel_return" value="http://buymesmart.com.au/contactus.aspx"/>
+<input type="submit" name="METHOD" value="Pay Now">
+
+</form>
+   
+{% endblock %}
+
+{% block mediaCSS %}
+<link href="/boilerplate/css/subscribe.css" media="all" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+
+{% block mediaJS %}
+
+
+<script type="text/javascript">
+	document.form_iframe.submit();
+</script>
+
+{% endblock %}
+

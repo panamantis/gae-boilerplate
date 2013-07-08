@@ -22,14 +22,18 @@
       <td>
       <ul>
         <li>
+          <img src="/boilerplate/img/drivein12.jpg"/>
+          <button class="buy-button" type="button" onClick="purchase('Item1');">Free Trial Subscription</button></li>
+          <br/>
+        <li>
         <img src="/boilerplate/img/golden_gate.jpg"/>
-        <button class="buy-button" type="button" onClick="document.getElementById('hss_iframe').style.visibility='visible';">Deluxe Subscription</button></li>
+        <button class="buy-button" type="button" onClick="purchase('Item2');">Deluxe Subscription</button></li>
       </ul>
       </td>
     </tr>
     </table>
 
-<iframe id="hss_iframe" name="hss_iframe" width="570px" height="540px" scrolling="no" style="visibility:hidden"></iframe>
+<iframe name="hss_iframe" width="570px" height="540px" scrolling="no"></iframe>
 <form style="display:none" target="hss_iframe" name="form_iframe" method="post" action="{{ mode_url }}">>
 <input type="hidden" name="cmd" value="_hosted-payment">
 <input type name="paymentaction" value="sale">
@@ -38,9 +42,9 @@
 <input type="hidden" name="business" value="{{ business }}">
 
 <input type name="subtotal" value="{{ subtotal }}">
-<input type="custom" name="{{ user_id }}"/>
-<!-- <input type="first_name" name="FIRST"/> -->
-<!-- <input type="last_name"  name="LAST"/> -->
+<input type="custom" name="{{ username }}"/>
+<input type="first_name" name="FIRST"/>
+<input type="last_name"  name="LAST"/>
 <input type="hidden" name="notify_url" value="{{ notify_url }}"/>
 <input type name="return" value="{{ return }}">
 <input type="hidden" name="cancel_return" value="{{ cancel_return }}"/>

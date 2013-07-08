@@ -23,6 +23,8 @@ _routes = [
     RedirectRoute('/contact/', handlers.ContactHandler, name='contact', strict_slash=True),
     RedirectRoute('/subscribe/', handlers.SubscribeHandler, name='subscribe', strict_slash=True),
     RedirectRoute('/subscribe/postback', handlers.SubscribeHandler, name='subscribe', strict_slash=True),
+    RedirectRoute('/subscription/', handlers.PaypalHandler, name='subscription', strict_slash=True),
+#    RedirectRoute('/subscription/callback', handlers.PaypalHandler, name='ipnhandler', strict_slash=True),
     RedirectRoute('/settings/profile', handlers.EditProfileHandler, name='edit-profile', strict_slash=True),
     RedirectRoute('/settings/password', handlers.EditPasswordHandler, name='edit-password', strict_slash=True),
     RedirectRoute('/settings/email', handlers.EditEmailHandler, name='edit-email', strict_slash=True),

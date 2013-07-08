@@ -32,8 +32,6 @@ class User(User):
     tz = ndb.StringProperty()
     #: Account activation verifies email
     activated = ndb.BooleanProperty(default=False)
-    #: User went through pay process
-    paid = ndb.BooleanProperty(default=False)
     
     @classmethod
     def get_by_email(cls, email):
