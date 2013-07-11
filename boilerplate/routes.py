@@ -21,9 +21,14 @@ _routes = [
     RedirectRoute('/activation/<user_id>/<token>', handlers.AccountActivationHandler, name='account-activation', strict_slash=True),
     RedirectRoute('/resend/<user_id>/<token>', handlers.ResendActivationEmailHandler, name='resend-account-activation', strict_slash=True),
     RedirectRoute('/contact/', handlers.ContactHandler, name='contact', strict_slash=True),
-    RedirectRoute('/subscribe/', handlers.SubscribeHandler, name='subscribe', strict_slash=True),
+
+    # Note:  Subscription callback requires non csrf token, POST from external (Set name to /subscription or change basehandler.py
+    RedirectRoute('/subscription/callback', handlers.PaypalButton, name='subscription', strict_slash=True),
+    RedirectRoute('/subscription/', handlers.PaypalButton, name='subscription', strict_slash=True),
+
     RedirectRoute('/subscribe/postback', handlers.SubscribeHandler, name='subscribe', strict_slash=True),
-    RedirectRoute('/subscription/', handlers.PaypalHandler, name='subscription', strict_slash=True),
+    RedirectRoute('/subscribe/', handlers.SubscribeHandler, name='subscribe', strict_slash=True),
+#    RedirectRoute('/subscription/', handlers.PaypalHandler, name='subscription', strict_slash=True),
 #    RedirectRoute('/subscription/callback', handlers.PaypalHandler, name='ipnhandler', strict_slash=True),
     RedirectRoute('/settings/profile', handlers.EditProfileHandler, name='edit-profile', strict_slash=True),
     RedirectRoute('/settings/password', handlers.EditPasswordHandler, name='edit-password', strict_slash=True),

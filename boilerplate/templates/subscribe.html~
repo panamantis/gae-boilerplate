@@ -16,35 +16,28 @@
 
 {% block content %}
 
-    <h1>Digital Posters Subscriptions</h1>
-    <table>
-    <tr valign="top">
-      <td>
-      <ul>
-        <li>
-        <img src="/boilerplate/img/golden_gate.jpg"/>
-        <button class="buy-button" type="button" onClick="document.getElementById('myFrame').style.visibility='visible';">Deluxe Subscription</button></li>
-      </ul>
-      </td>
-    </tr>
-    </table>
+    <h1>Subscription Buttons</h1>
 
-<iframe name="hss_iframe" width="570px" height="540px" scrolling="no" style="visibility:hidden"></iframe>
-<form style="display:none" target="hss_iframe" name="form_iframe" method="post" action="{{ mode_url }}">>
-<input type="hidden" name="cmd" value="_hosted-payment">
-<input type name="paymentaction" value="sale">
-<input type="submit" name="METHOD" value="Pay Now">
-<input type="hidden" name="template" value="templateD">
-<input type="hidden" name="business" value="{{ business }}">
+<!-- 
+https://github.com/paypal/JavaScriptButtons
+YOUR_MERCHANT_ID
+Your merchant ID needs to be added to the URL of the referenced script. This ID can either be your Secure Merchant ID, which can be found by logging into your PayPal account and visiting your profile, or your email address.
 
-<input type name="subtotal" value="{{ subtotal }}">
-<input type="custom" name="{{ user_id }}"/>
-<!-- <input type="first_name" name="FIRST"/> -->
-<!-- <input type="last_name"  name="LAST"/> -->
-<input type="hidden" name="notify_url" value="{{ notify_url }}"/>
-<input type name="return" value="{{ return }}">
-<input type="hidden" name="cancel_return" value="{{ cancel_return }}"/>
-</form>
+    data-button="subscribe"
+    data-button="buynow"
+    data-env= sandbox (defaults to 'www')
+-->
+<script src="/boilerplate/js/libs/paypal-button.min.js?merchant={{ merchant_id }}"
+    data-button="subscribe"
+    data-recurrence="1"
+    data-period="M"
+    data-amount="{{ subtotal }}"
+    data-name="{{ custom }}"
+    data-callback="{{ notify_url }}"
+    data-env="{{ environment }}"
+
+></script>
+
    
 {% endblock %}
 
@@ -56,10 +49,6 @@
 
 {% block mediaJS %}
 
-
-<script type="text/javascript">
-	document.form_iframe.submit();
-</script>
 
 {% endblock %}
 

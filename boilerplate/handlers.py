@@ -15,12 +15,14 @@ import json
 # related third party imports
 import webapp2
 import httpagentparser
+import urllib
 from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.i18n import gettext as _
 from webapp2_extras.appengine.auth.models import Unique
 from google.appengine.api import taskqueue
 from google.appengine.api import users
+from google.appengine.api import urlfetch
 from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.runtime import apiproxy_errors
 from github import github
@@ -980,6 +982,124 @@ class ResendActivationEmailHandler(BaseHandler):
 
 
 
+class PaypalButton(BaseHandler):
+    """
+    Handler for Subscription
+    - Basic Paypal button
+    """
+
+    def __init__(self, *args, **kwargs):
+    	self.ACCOUNT_EMAIL="jon.clement@gmail.com"
+	self.SUBTOTAL="7" #$7 dollar amount
+
+	self.MODE="sandbox" # or www
+
+	if self.MODE=="sandbox":
+	    self.PP_URL = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+	else:
+	    PP_URL = "https://www.paypal.com/cgi-bin/webscr"
+
+        BaseHandler.__init__(self, *args, **kwargs) #superclass
+	return
+
+    @user_required
+    def get(self):
+	"""Setup basic PayPal iframe"""
+        params = {}
+
+	params['notify_url'] = "http://"+self.request.server_name+"/subscription/callback"      #Active Paypal transaction listener
+        params['environment'] = self.MODE
+        params['subtotal'] = self.SUBTOTAL
+	params['merchant_id'] = self.ACCOUNT_EMAIL
+
+	# Grab logged in username (For tracking transaction)
+	#user_info = models.User.get_by_id(long(self.user_id))
+	#params['custom']=user_info.email #username,name,email
+	params['custom']=str(self.user_id)
+
+        return self.render_template('subscribe.html', **params)
+
+
+    def post(self):    
+	#/subscription/callback
+	logging.info("------------GOT POST TO /subscription/callback----------------")
+
+	parameters = None
+        # Check payment is completed, not Pending or Failed.
+        if self.request.get('payment_status') == 'Completed':
+            if self.request.POST:
+                parameters = self.request.POST.copy()
+            if self.request.GET:
+                parameters = self.request.GET.copy()
+            logging.debug('IPN 1, or your own message for yourself to read in log.')
+        else:
+            self.response.out.write('Error, sorry.  The parameter payment_status was not Completed.')
+        # Check the IPN POST request came from real PayPal, 
+        # not from a fraudster.
+        if parameters:
+               parameters['cmd']='_notify-validate'
+               params = urllib.urlencode(parameters)
+               status = urlfetch.fetch(
+                            url = self.PP_URL,
+                            method = urlfetch.POST,  
+                            payload = params,
+                           ).content
+               if not status == "VERIFIED":
+                   self.response.out.write('Error.  The request could not be verified, check for fraud.')
+                   parameters['homemadeParameterValidity']=False 
+                   # parameters = None
+                   # You may log this data in your database, 
+                   # for later investigation.
+
+        # Check that the money is really to go to your account, 
+        # not to a fraudster's account.
+        if parameters['receiver_email'] == self.ACCOUNT_EMAIL:  
+            transaction_id = parameters['txn_id']
+            # Check if this is a new, unique txn, 
+            # not a fraudster re-using an old, verified txn.
+            invoice_id = parameters['invoice']
+            currency = parameters['mc_currency']
+            amount = parameters['mc_gross']
+            fee = parameters['mc_fee']
+            # Check if they are the right product/item, right price, 
+            # right currency, right amount, etc.
+            email = parameters['payer_email']
+            identifier = parameters['payer_id']
+
+	    if 2>1: #Paypal button does not send back subtotal
+	    # if self.SUBTOTAL==parameters['subtotal']:
+	        logging.debug("Expected subtotal match")
+                # Email/notify/inform the user for whatever reason.
+   
+                parameters['your_parm']= "It is ok on 19 September, 2010." 
+                logging.debug('IPN 100. All OK.')
+                logging.debug(parameters['txn_id'])
+                logging.debug(parameters['invoice'])
+                logging.debug(parameters['payer_email'])
+
+                # With this IPN testing, you can't see results on the browser.
+                # See results on the log file maintained by Google AppEngine.
+                #template_values = { 'params': parameters, }
+                #doRender(self,'ipn_ok.htm', template_values )
+
+   		# Store valid transaction into local user account
+                the_user_id=parameters['custom']     # Return user_id in custom field that was passed from iframe
+		if the_user_id:
+		    user_info = models.User.get_by_id(the_user_id)
+		    if user_info is not None:
+	                #user_info.paid = True          # Requires update of db model
+	                user_info.put()
+			logging.info("Successfully registered paid user")
+		    else:
+		        logging.error("Unknown user id: "+the_user_id)
+	    # else:
+	    #     logging.error("Subtotals unmatched, expected "+self.SUBTOTAL+" got: "+str(parameters['subtotal']))
+	else:
+            logging.error("Target email unmatched, expected "+self.ACCOUNT_EMAIL+" got: "+str(parameters['receiver_email']))
+
+
+
+
 class PaypalHandler(BaseHandler):
     """
     Handler for Subscription
@@ -988,6 +1108,7 @@ class PaypalHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
     	self.ACCOUNT_EMAIL="merch1_1326898379_biz@dsign.co.uk"
 	self.SUBTOTAL="7"
+
 
         BaseHandler.__init__(self, *args, **kwargs) #superclass
 	return
