@@ -989,7 +989,7 @@ class PaypalButton(BaseHandler):
     """
 
     def __init__(self, *args, **kwargs):
-    	self.ACCOUNT_EMAIL="jon.clement@gmail.com"
+    	self.ACCOUNT_EMAIL="testeremail@gmail.com"
 	self.SUBTOTAL="7" #$7 dollar amount
 
 	self.MODE="sandbox" # or www
@@ -1037,6 +1037,7 @@ class PaypalButton(BaseHandler):
         # Check the IPN POST request came from real PayPal, 
         # not from a fraudster.
         if parameters:
+	       logging.info("[debug paypal response] "+str(parameters))
                parameters['cmd']='_notify-validate'
                params = urllib.urlencode(parameters)
                status = urlfetch.fetch(
@@ -1087,7 +1088,7 @@ class PaypalButton(BaseHandler):
 		if the_user_id:
 		    user_info = models.User.get_by_id(the_user_id)
 		    if user_info is not None:
-	                #user_info.paid = True          # Requires update of db model
+	                user_info.paid = True          # Requires update of db model
 	                user_info.put()
 			logging.info("Successfully registered paid user")
 		    else:

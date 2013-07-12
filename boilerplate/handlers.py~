@@ -989,10 +989,15 @@ class PaypalButton(BaseHandler):
     """
 
     def __init__(self, *args, **kwargs):
-    	self.ACCOUNT_EMAIL="jon.clement@gmail.com"
-	self.SUBTOTAL="7"
-	self.PP_URL = "https://www.sandbox.paypal.com/cgi-bin/webscr"
-	#PP_URL = "https://www.paypal.com/cgi-bin/webscr"
+    	self.ACCOUNT_EMAIL="testeremail@gmail.com"
+	self.SUBTOTAL="7" #$7 dollar amount
+
+	self.MODE="sandbox" # or www
+
+	if self.MODE=="sandbox":
+	    self.PP_URL = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+	else:
+	    PP_URL = "https://www.paypal.com/cgi-bin/webscr"
 
         BaseHandler.__init__(self, *args, **kwargs) #superclass
 	return
@@ -1003,7 +1008,7 @@ class PaypalButton(BaseHandler):
         params = {}
 
 	params['notify_url'] = "http://"+self.request.server_name+"/subscription/callback"      #Active Paypal transaction listener
-        params['environment'] = "sandbox" # or www
+        params['environment'] = self.MODE
         params['subtotal'] = self.SUBTOTAL
 	params['merchant_id'] = self.ACCOUNT_EMAIL
 
@@ -1032,6 +1037,7 @@ class PaypalButton(BaseHandler):
         # Check the IPN POST request came from real PayPal, 
         # not from a fraudster.
         if parameters:
+	       logging.info("[debug paypal response] "+str(parameters))
                parameters['cmd']='_notify-validate'
                params = urllib.urlencode(parameters)
                status = urlfetch.fetch(
@@ -1061,7 +1067,7 @@ class PaypalButton(BaseHandler):
             email = parameters['payer_email']
             identifier = parameters['payer_id']
 
-	    if 2>1:
+	    if 2>1: #Paypal button does not send back subtotal
 	    # if self.SUBTOTAL==parameters['subtotal']:
 	        logging.debug("Expected subtotal match")
                 # Email/notify/inform the user for whatever reason.
@@ -1082,16 +1088,15 @@ class PaypalButton(BaseHandler):
 		if the_user_id:
 		    user_info = models.User.get_by_id(the_user_id)
 		    if user_info is not None:
-	                #user_info.paid = True          # Requires update of db model
+	                user_info.paid = True          # Requires update of db model
 	                user_info.put()
 			logging.info("Successfully registered paid user")
 		    else:
-			logging.warning("Unknown user")
+		        logging.error("Unknown user id: "+the_user_id)
 	    # else:
 	    #     logging.error("Subtotals unmatched, expected "+self.SUBTOTAL+" got: "+str(parameters['subtotal']))
 	else:
             logging.error("Target email unmatched, expected "+self.ACCOUNT_EMAIL+" got: "+str(parameters['receiver_email']))
-
 
 
 
