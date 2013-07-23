@@ -35,6 +35,7 @@ from lib import utils, captcha, twitter
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required
 from lib.decorators import taskqueue_method
+from lib.decorators import check_registered
 from lib import facebook
 
 # Subscription import
@@ -1348,7 +1349,7 @@ class ContactHandler(BaseHandler):
     Handler for Contact Form
     """
 
-    @check_registered
+#    @check_registered
     def get(self):
         """ Returns a simple HTML for contact form """
 

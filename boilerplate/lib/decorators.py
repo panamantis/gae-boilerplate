@@ -110,16 +110,21 @@ def taskqueue_method(handler):
 def check_registered(handler):
     def check_paid(self, *args, **kwargs):
         user = self.auth.get_user_by_session()
-        user_info = models.User.get_by_id(long(user['user_id']))
 
-	logging.info("USER PAID: "+str(user_info.paid))
+	if not user is None:
+            user_info = models.User.get_by_id(long(user['user_id']))
 
-        if not user_info.paid:
-    	    logging.info("User not paid so redirecting")
+            logging.info("USER PAID: "+str(user_info.paid))
+
+            if not user_info.paid:
+    	        logging.info("User not paid so redirecting")
+                self.redirect(self.uri_for('login'))
+            else:
+    	        logging.info("User paid, pass through")
+                pass
+	else:
+	    #User not logged in
             self.redirect(self.uri_for('login'))
-        else:
-    	    logging.info("User paid, pass through")
-            pass
 
         return handler(self, *args, **kwargs) #User registered
     return check_paid

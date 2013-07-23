@@ -118,7 +118,7 @@ def check_registered(handler):
     	    logging.info("User not paid so redirecting")
             self.redirect(self.uri_for('login'))
         else:
-    	    logging.info("User paid redirecting")
+    	    logging.info("User paid, pass through")
             pass
 
         return handler(self, *args, **kwargs) #User registered
