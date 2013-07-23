@@ -35,6 +35,7 @@ from lib import utils, captcha, twitter
 from lib.basehandler import BaseHandler
 from lib.decorators import user_required
 from lib.decorators import taskqueue_method
+from lib.decorators import check_registered
 from lib import facebook
 
 # Subscription import
@@ -1017,6 +1018,33 @@ class PaypalButton(BaseHandler):
 	#params['custom']=user_info.email #username,name,email
 	params['custom']=str(self.user_id)
 
+	logging.info("----------------------------------------")
+	user = self.auth.get_user_by_session()
+	#user.user_id
+	logging.info("ST: "+str(user))
+       	user2=str(self.user_id)
+	logging.info("ST2: "+str(user2))
+
+	user = self.auth.get_user_by_session()
+	logging.info(":::: "+str(user))
+	logging.info(":::: "+str(user['user_id']))
+	user_info = models.User.get_by_id(long(user['user_id']))
+	logging.info("STp1: "+str(user_info.paid))
+
+	#works
+	user_info = models.User.get_by_id(long(self.user_id))
+	logging.info("STp2: "+str(user_info.paid))
+
+        logging.info("### "+str(self.auth))
+#	self.auth.store.user_to_dict(user)
+
+
+
+
+	#user_id,token_ts,token
+
+	logging.info("----------------------------------------")
+
         return self.render_template('subscribe.html', **params)
 
 
@@ -1321,6 +1349,7 @@ class ContactHandler(BaseHandler):
     Handler for Contact Form
     """
 
+    @check_registered
     def get(self):
         """ Returns a simple HTML for contact form """
 
